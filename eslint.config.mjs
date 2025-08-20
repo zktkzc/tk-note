@@ -26,7 +26,8 @@ export default tseslint.config(
       ...eslintPluginReactHooks.configs.recommended.rules,
       ...eslintPluginReactRefresh.configs.vite.rules,
       '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/no-used-vars': 'off'
+      '@typescript-eslint/no-used-vars': 'off',
+      '@typescript-eslint/no-require-imports': 'off'
     }
   },
   eslintConfigPrettier
