@@ -1,26 +1,26 @@
 # tk-note
 
-An Electron application with React and TypeScript
+使用Electron、React、TypeScript编写的笔记软件
 
-## Recommended IDE Setup
+## 软件界面
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+![](assets/img.png)
 
-## Project Setup
+## 项目初始化
 
-### Install
+### 安装
 
 ```bash
 $ pnpm install
 ```
 
-### Development
+### 开发
 
 ```bash
 $ pnpm dev
 ```
 
-### Build
+### 编译
 
 ```bash
 # For windows
