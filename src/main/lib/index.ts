@@ -1,8 +1,8 @@
 import { homedir } from 'os'
 import { appDirectoryName, fileEncoding } from '@shared/constants'
-import { ensureDir, readdir, readFile, stat, writeFile } from 'fs-extra'
+import { ensureDir, readdir, readFile, remove, stat, writeFile } from 'fs-extra'
 import { NoteContent, NoteInfo } from '@shared/models'
-import { CreateNote, GetNotes, ReadNote, WriteNote } from '@shared/types'
+import { CreateNote, DeleteNote, GetNotes, ReadNote, WriteNote } from '@shared/types'
 import { dialog } from 'electron'
 import * as path from 'node:path'
 
@@ -10,6 +10,9 @@ export const getRootDir = () => {
   return `${homedir()}/${appDirectoryName}`
 }
 
+/**
+ * 获取所有笔记
+ */
 export const getNotes: GetNotes = async () => {
   const rootDir = getRootDir()
   await ensureDir(rootDir)
@@ -18,6 +21,10 @@ export const getNotes: GetNotes = async () => {
   return Promise.all(notes.map(getNoteInfoFromFileName))
 }
 
+/**
+ * 根据文件名获取笔记信息
+ * @param fileName 文件名
+ */
 export const getNoteInfoFromFileName = async (fileName: string): Promise<NoteInfo> => {
   const fileStats = await stat(`${getRootDir()}/${fileName}`)
   return {
@@ -26,17 +33,29 @@ export const getNoteInfoFromFileName = async (fileName: string): Promise<NoteInf
   }
 }
 
+/**
+ * 读取文件
+ * @param filename 文件名
+ */
 export const readNote: ReadNote = async (filename: string) => {
   const rootDir = getRootDir()
   return await readFile(`${rootDir}/${filename}.md`, { encoding: fileEncoding })
 }
 
+/**
+ * 保存笔记
+ * @param filename 文件名
+ * @param content 内容
+ */
 export const writeNote: WriteNote = async (filename: string, content: NoteContent) => {
   const rootDir = getRootDir()
   console.info(`Writing content to file ${filename}`)
   return await writeFile(`${rootDir}/${filename}.md`, content, { encoding: fileEncoding })
 }
 
+/**
+ * 新建笔记
+ */
 export const createNote: CreateNote = async () => {
   const rootDir = getRootDir()
   await ensureDir(rootDir)
@@ -67,4 +86,29 @@ export const createNote: CreateNote = async () => {
   console.info(`新建笔记：${filePath}`)
   await writeFile(filePath, '')
   return filename
+}
+
+/**
+ * 删除笔记
+ * @param filename 文件名
+ */
+export const deleteNote: DeleteNote = async (filename: string) => {
+  const rootDir = getRootDir()
+  const { response } = await dialog.showMessageBox({
+    type: 'warning',
+    title: '删除笔记',
+    message: `确定要删除笔记${filename}?`,
+    buttons: ['删除', '取消'],
+    defaultId: 1,
+    cancelId: 1
+  })
+
+  if (response === 1) {
+    console.info(`取消删除笔记${filename}`)
+    return false
+  }
+
+  console.info(`删除笔记${filename}`)
+  await remove(`${rootDir}/${filename}.md`)
+  return true
 }
